@@ -346,14 +346,14 @@ function widget:Initialize()
 	WG['ordermenu'].reloadBindings = reloadBindings
 	WG['ordermenu'].setBottomPosition = function(value)
 		stickToBottom = value
-		doUpdate = true
+		widget:ViewResize()
 	end
 	WG['ordermenu'].getAlwaysShow = function()
 		return alwaysShow
 	end
 	WG['ordermenu'].setAlwaysShow = function(value)
 		alwaysShow = value
-		doUpdate = true
+		widget:ViewResize()
 	end
 	WG['ordermenu'].getBottomPosition = function()
 		return stickToBottom
@@ -367,7 +367,6 @@ function widget:Initialize()
 		else
 			disabledCommand[params[1]] = nil
 		end
-		doUpdate = true
 	end
 	WG['ordermenu'].getColorize = function()
 		return colorize

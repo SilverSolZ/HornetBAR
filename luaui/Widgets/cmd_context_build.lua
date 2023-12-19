@@ -20,17 +20,11 @@ function widget:GetInfo()
 	}
 end
 
-local isPregame = Spring.GetGameFrame() == 0 and not isSpec
-
-local GetActiveCommand		= Spring.GetActiveCommand
-local SetActiveCommand		= Spring.SetActiveCommand
-local spGetMouseState 		= Spring.GetMouseState
-local spTraceScreenRay 		= Spring.TraceScreenRay
-local currentTime 			= os.clock
-
 --- Human friendly list. Automatically converted to unitdef IDs on init
 -- this should only ever swap between pairs of (buildable) units
 local unitlist = {
+	{'armmex','armuwmex'},
+	{'cormex','coruwmex'},
 	{'armmakr','armfmkr'},
 	{'cormakr','corfmkr'},
 	{'armdrag','armfdrag'},
@@ -69,23 +63,22 @@ local unitlist = {
 	{'corvp','coramsub'},
 	{'armap','armplat'},
 	{'corap','corplat'},
-	{'corasp','corfasp'},
-	{'armasp','armfasp'},
-	{'armgeo','armuwgeo'},
-	{'armageo','armuwageo'},
-	{'corgeo','coruwgeo'},
-	{'corageo','coruwageo'},
 }
 
 local groundBuildings = {}
 local waterBuildings = {}
 
+local GetActiveCommand		= Spring.GetActiveCommand
+local SetActiveCommand		= Spring.SetActiveCommand
+
+local spGetMouseState = Spring.GetMouseState
+local spTraceScreenRay = Spring.TraceScreenRay
+
 local mouseDownPos
 
 local updateRate = 0.1
-local lastUpdateTime = 0
+local timeCounter = 0
 local gameStarted
-
 
 local function distance2dSquared(x1, y1, x2, y2)
 	local dx = x1 - x2
@@ -108,27 +101,40 @@ function widget:PlayerChanged(playerID)
     maybeRemoveSelf()
 end
 
-local function setPreGamestartDefID(uDefID)
-	if WG["pregame-build"] and WG["pregame-build"].setPreGamestartDefID then
-		WG["pregame-build"].setPreGamestartDefID(uDefID)
+function widget:Initialize()
+    if Spring.IsReplay() or Spring.GetGameFrame() > 0 then
+        maybeRemoveSelf()
+    end
+
+	for _,unitNames in ipairs(unitlist) do
+		for i, unitName in ipairs(unitNames) do
+			local unitDefID = UnitDefNames[unitName].id
+			local isWater = i % 2 == 0
+
+			-- Break the unit list into two matching arrays
+			if unitDefID then
+				if isWater then
+					table.insert(waterBuildings,unitDefID)
+				else
+					table.insert(groundBuildings, unitDefID)
+				end
+			end
+		end
+
 	end
 end
 
--- returns the unitDefID of the selected building, or false if there is no selected building
+
 local function isBuilding()
 	local _, cmdID
-	if isPregame and WG['pregame-build'] and WG['pregame-build'].getPreGameDefID then
+	if isPregame and WG['pregame-build'].getPreGameDefID then
 		cmdID = WG['pregame-build'].getPreGameDefID()
 		cmdID = cmdID and -cmdID or 0 --invert to get the correct negative value
 	else
 		_, cmdID = GetActiveCommand()
 	end
 
-	if cmdID and cmdID < 0 then
-		return -cmdID
-	else
-		return false
-	end
+	return cmdID and cmdID < 0 or false
 end
 
 
@@ -155,18 +161,20 @@ local function indexOf(array, value)
 	return nil
 end
 
--- DrawWorld because update doesn't run pregame
-function widget:DrawWorld()
-
+function widget:Update(deltaTime)
+	timeCounter = timeCounter + deltaTime
 	-- update only x times per second
-	if lastUpdateTime > currentTime() + updateRate then
+	if timeCounter >= updateRate then
+		timeCounter = 0
+	else
 		return
 	end
 
-	local unitDefID = isBuilding()
-	if not unitDefID then
+	local _, cmd_id = GetActiveCommand()
+	if not cmd_id or cmd_id>=0 then
 		return
 	end
+	local unitDefID = -cmd_id
 
 	local pos = getCursorWorldPosition()
 	if not pos then
@@ -174,12 +182,11 @@ function widget:DrawWorld()
 	end
 
 	local x, y, lmb, mmb, rmb = spGetMouseState()
+	local dist = distance2dSquared(mouseDownPos[1], mouseDownPos[3], pos[1], pos[3])
 
-	if mouseDownPos and lmb then
+	if mouseDownPos and lmb and dist > 100 then
 		-- currently doing a build drag, don't swap buildings
-		if distance2dSquared(mouseDownPos[1], mouseDownPos[3], pos[1], pos[3]) > 100 then
-			return
-		end
+		return
 	end
 
 	-- Check both arrays for a match with the current building cmd
@@ -204,47 +211,11 @@ function widget:DrawWorld()
 	-- Water level is always 0, but there's minor inaccuracy in the chain, so fuzz it a bit
 	if pos[2] < 0.01 then
 		if(isGround) then
-			if(isPregame) then
-				setPreGamestartDefID(alt)
-			else
-				SetActiveCommand('buildunit_'..UnitDefs[alt].name)
-			end
+			SetActiveCommand('buildunit_'..UnitDefs[alt].name)
 		end
 	else
 		if not isGround then
-			if(isPregame) then
-				setPreGamestartDefID(alt)
-			else
-				SetActiveCommand('buildunit_'..UnitDefs[alt].name)
-			end
+			SetActiveCommand('buildunit_'..UnitDefs[alt].name)
 		end
-	end
-	lastUpdateTime = currentTime()
-end
-
-function widget:GameStart()
-	isPregame = false
-end
-
-function widget:Initialize()
-	if Spring.IsReplay() or Spring.GetGameFrame() > 0 then
-		maybeRemoveSelf()
-	end
-
-	for _,unitNames in ipairs(unitlist) do
-		for i, unitName in ipairs(unitNames) do
-			local unitDefID = UnitDefNames[unitName].id
-			local isWater = i % 2 == 0
-
-			-- Break the unit list into two matching arrays
-			if unitDefID then
-				if isWater then
-					table.insert(waterBuildings,unitDefID)
-				else
-					table.insert(groundBuildings, unitDefID)
-				end
-			end
-		end
-
 	end
 end

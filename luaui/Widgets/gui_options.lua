@@ -4011,7 +4011,7 @@ function init()
 		  end,
 		},
 
-		{ id = "attackrange", group = "ui", category = types.basic, widget = "Attack Range GL4", name = Spring.I18N('ui.settings.option.attackrange'), type = "bool", value = GetWidgetToggleValue("Attack Range GL4"), description = Spring.I18N('ui.settings.option.attackrange_descr') },
+		{ id = "attackrange", group = "ui", category = types.basic, widget = "Attack Range GL4", name = Spring.I18N('ui.settings.option.attackrange'), type = "bool", value = GetWidgetToggleValue("Defense Range"), description = Spring.I18N('ui.settings.option.attackrange_descr') },
 		{ id = "attackrange_shiftonly", category = types.dev, group = "ui", name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.attackrange_shiftonly'), type = "bool", value = (WG['attackrange'] ~= nil and WG['attackrange'].getShiftOnly ~= nil and WG['attackrange'].getShiftOnly()), description = Spring.I18N('ui.settings.option.attackrange_shiftonly_descr'),
 		  onload = function(i)
 			loadWidgetData("Attack Range GL4", "attackrange_shiftonly", { 'shift_only' })
@@ -4020,7 +4020,7 @@ function init()
 			saveOptionValue('Attack Range GL4', 'attackrange', 'setShiftOnly', { 'shift_only' }, value)
 		  end,
 		},
-		{ id = "attackrange_cursorunitrange", category = types.dev, group = "ui", name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.attackrange_cursorunitrange'), type = "bool", value = (WG['attackrange'] ~= nil and WG['attackrange'].getCursorUnitRange ~= nil and WG['attackrange'].getCursorUnitRange()), description = Spring.I18N('ui.settings.option.attackrange_cursorunitrange_descr'),
+		{ id = "attackrange_cursorunitrange", category = types.dev, group = "ui", name = widgetOptionColor .. "   " .. Spring.I18N('ui.settings.option.attackrange_cursorunitrange'), type = "bool", value = (WG['attackrange'] ~= nil and WG['attackrange'].setCursorUnitRange ~= nil and WG['attackrange'].setCursorUnitRange()), description = Spring.I18N('ui.settings.option.attackrange_cursorunitrange_descr'),
 		  onload = function(i)
 			  loadWidgetData("Attack Range GL4", "attackrange_cursorunitrange", { 'cursor_unit_range' })
 		  end,
@@ -6264,31 +6264,19 @@ function widget:Initialize()
 			return false
 		end
 	end
-	WG['options'].addOptions = function(newOptions)
-		for _, option in ipairs(newOptions) do
-			option.group = "custom"
-			customOptions[#customOptions+1] = option
-		end
-
-		init()
-	end
-	WG['options'].removeOptions = function(names)
-		for _, name in ipairs(names) do
-			for i, option in pairs(customOptions) do
-				if option.id == name then
-					customOptions[i] = nil
-					break
-				end
-			end
-		end
-
-		init()
-	end
 	WG['options'].addOption = function(option)
-		return WG['options'].addOptions({ option })
+		option.group = "custom"
+		customOptions[#customOptions+1] = option
+		init()
 	end
 	WG['options'].removeOption = function(name)
-		return WG['options'].removeOptions({ name })
+		for i,option in pairs(customOptions) do
+			if option.id == name then
+				customOptions[i] = nil
+				init()
+				break
+			end
+		end
 	end
 end
 

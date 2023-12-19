@@ -180,11 +180,11 @@ function ShardUnitType:HasSonarStealth()
 end
 
 function ShardUnitType:LosRadius()
-	return self.def.sightDistance
+	return self.def.losRadius
 end
 
 function ShardUnitType:RadarRadius()
-	return self.def.radarDistance
+	return self.def.radarRadius
 end
 
 function ShardUnitType:SonarRadius()
@@ -192,7 +192,7 @@ function ShardUnitType:SonarRadius()
 end
 
 function ShardUnitType:SeismicRadius()
-	return self.def.seismicDistance
+	return self.def.seismicRadius
 end
 
 function ShardUnitType:CanManualFire()

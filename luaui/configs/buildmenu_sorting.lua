@@ -101,8 +101,6 @@ local unitOrderTable = {
 	['legfig']         = 004306,
 	['armhawk']        = 004310, --FIGHTERS T2
 	['corvamp']        = 004315,
-	['armsfig2']       = 004316, -- T2 Heavy Fighter (air rework mod)
-	['corsfig2']       = 004317,
 
 	['armkam']         = 004320, --GUNSHIPS
 	['legmos']         = 004322,
@@ -432,14 +430,10 @@ local unitOrderTable = {
 
    --ECO NRG GEOS
    ['armgeo']         = 101200,
-   ['armuwgeo']       = 101201,
    ['corgeo']         = 101250,
-   --['coruwgeo']       = 101251,
    ['armgmm']         = 101300,
    ['corageo']        = 101350,
-   ['coruwageo']      = 101351,
    ['armageo']        = 101400,
-   ['armuwageo']      = 101401,
    ['corbhmth']       = 101450,
 
    --ECO NRG FUSIONS
@@ -490,7 +484,6 @@ local unitOrderTable = {
    --UTILITIES
    ['armasp']         = 102800, --AIR REPAIR PADS
    ['corasp']         = 102825,
-   ['corfasp']         = 102826,
 
    ['armeyes']        = 103000,
    ['coreyes']        = 103050,
@@ -611,13 +604,7 @@ local unitOrderTable = {
 
    --WATER ECO NRG GENS
    ['armtide']        = 203000,
-   ['cortide']        = 203100,
-
-   --WATER ECO NRG GEOS
-   ['armuwgeo']       = 204000,
-   ['coruwgeo']       = 204100,
-   ['armuwageo']       = 204500,
-   ['coruwageo']       = 204600,
+   ['cortide']        = 203500,
 
    --WATER ECO NRG FUSIONS
    ['armuwfus']       = 205000,
@@ -633,32 +620,29 @@ local unitOrderTable = {
 
    ['armsy']          = 211100,
    ['corsy']          = 211200,
+   ['armasy']         = 211300,
+   ['corasy']         = 211400,
    ['armfhp']         = 212100,
    ['corfhp']         = 212200,
    ['armamsub']       = 213100,
    ['coramsub']       = 213200,
    ['armplat']        = 214100,
    ['corplat']        = 214200,
-   	--T2
-   ['armasy']         = 215000,
-   ['corasy']         = 215100,
-   	--T3
-   ['armshltxuw']     = 216100,
-   ['corgantuw']      = 216200,
+
+   ['armshltxuw']     = 215100,
+   ['corgantuw']      = 215200,
 
    --WATER MINES
-   ['armfmine3']      = 217100,
-   ['corfmine3']      = 217200,
+   ['armfmine3']      = 216100,
+   ['corfmine3']      = 216200,
 
    --WATER UTILITIES
-   ['armfasp']        = 220000,
-   ['corfasp']        = 220050,
    ['armfrad']        = 220100,
-   ['corfrad']        = 220150,
-   ['armason']        = 220200,
-   ['corason']        = 220250,
-   ['armfatf']        = 220400,
-   ['corfatf']        = 220450,
+   ['corfrad']        = 220200,
+   ['armason']        = 220300,
+   ['corason']        = 220400,
+   ['armfatf']        = 220500,
+   ['corfatf']        = 220600,
 
    --WATER DEFENSES LAND
    ['armfdrag']       = 230100,

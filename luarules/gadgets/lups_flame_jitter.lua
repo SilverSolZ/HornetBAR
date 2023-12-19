@@ -29,8 +29,7 @@ if gadgetHandler:IsSyncedCode() then
 	end
 
 	GG.LUPS = GG.LUPS or {}
-	GG.LUPS.FlameShot = FlameShot   
-
+	GG.LUPS.FlameShot = FlameShot
 
 	function gadget:GameFrame(n)
 		thisGameFrame = n
@@ -112,7 +111,7 @@ else	-- UNSYNCED
 			class = 'JitterParticles2',
 			colormap = { { 1, 1, 1, 1 }, { 1, 1, 1, 1 } },
 			count = 1,
-			life = particleLife*0.5,
+			life = particleLife,
 			lifeSpread = 6,
 			delaySpread = 3,
 			force = { 0, 0.6, 0 },
@@ -124,27 +123,27 @@ else	-- UNSYNCED
 			emitVector = { dirx, diry, dirz },
 			emitRotSpread = 2.5,
 
-			speed = 6,
+			speed = 8,
 			speedSpread = 1.5,
 			speedExp = 1.5,
 
-			size = 35 + (particleLife*2),
-			sizeGrowth = 5,
+			size = 35,
+			sizeGrowth = 5.5,
 
-			scale = 1.4,
-			strength = 1.3,
+			scale = 1.5,
+			strength = 1.2,
 			heat = 6,
 		}
 		particleCnt = particleCnt + 1
---[[	
+	--[[
 		particleList[particleCnt] = {
 			class = 'SimpleParticles2',
 			colormap = { { 1, 1, 1, 0.01 },
-						 { 0.92, 0.89, 0.80, 0.01 },
-						 { 0.75, 0.55, 0.3, 0.02 },
+						 { 1, 1, 1, 0.01 },
+						 { 0.75, 0.5, 0.5, 0.01 },
 						 { 0, 0, 0, 0.01 } },
 			count = 1,
-			life = particleLife*0.5,
+			life = particleLife*0.8,
 			lifeSpread = 6,
 			delaySpread = 3,
 

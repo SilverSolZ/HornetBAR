@@ -633,10 +633,8 @@ local function commonUnitName(unitIDs)
 	for _, unitID in pairs(unitIDs) do
 		local unitDefID = Spring.GetUnitDefID(unitID)
 
-		-- unitDefID will be nil if shared units are visible only as unidentified radar dots
-		-- (when spectating with PlayerView ON from enemy team's point of view)
-		if (commonUnitDefID and unitDefID ~= commonUnitDefID) or not unitDefID then
-			return #unitIDs > 1 and "units" or "unit"
+		if commonUnitDefID and unitDefID ~= commonUnitDefID then
+			return "units"
 		end
 
 		commonUnitDefID = unitDefID
@@ -717,16 +715,8 @@ function widget:UnitTaken(unitID, _, oldTeamID, newTeamID)
 	local newAllyTeamID = select(6, Spring.GetTeamInfo(newTeamID))
 
 	local myAllyTeamID = Spring.GetMyAllyTeamID()
-
-	local allyTeamShare = (oldAllyTeamID == myAllyTeamID and newAllyTeamID == myAllyTeamID)
-	local selfShare = (oldTeamID == newTeamID) -- may happen if took other player
-
-	local _, _, _, captureProgress, _ = Spring.GetUnitHealth(unitID)
-	local captured = (captureProgress == 1)
-
 	local spec = Spring.GetSpectatingState()
-
-	if (not spec and not allyTeamShare) or selfShare or captured then
+	if not spec and (oldAllyTeamID ~= myAllyTeamID or newAllyTeamID ~= myAllyTeamID) then -- skip captured units
 		return
 	end
 

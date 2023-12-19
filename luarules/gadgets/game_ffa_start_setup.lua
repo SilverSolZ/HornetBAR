@@ -163,9 +163,7 @@ function gadget:Initialize()
   local allyTeamList = Spring.Utilities.GetAllyTeamList()
 
   setFFAStartPoints(allyTeamList)
-  if Spring.GetModOptions().teamffa_start_boxes_shuffle then
-    shuffleStartBoxes(allyTeamList)
-  end
+  shuffleStartBoxes(allyTeamList)
 
   -- our job here is done :)
   gadgetHandler:RemoveGadget(self)

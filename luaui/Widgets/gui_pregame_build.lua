@@ -326,6 +326,7 @@ function widget:DrawWorld()
 	-- Avoid unnecessary overhead after buildqueue has been setup in early frames
 	if Spring.GetGameFrame() > 0 then
 		widgetHandler:RemoveWidgetCallIn('DrawWorld', self)
+
 		return
 	end
 
@@ -423,7 +424,6 @@ function widget:GameFrame(n)
 	-- Avoid unnecessary overhead after buildqueue has been setup in early frames
 	if #buildQueue == 0 then
 		widgetHandler:RemoveWidgetCallIn('GameFrame', self)
-		widgetHandler:RemoveWidget()
 		return
 	end
 

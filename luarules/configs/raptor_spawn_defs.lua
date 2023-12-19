@@ -1159,8 +1159,6 @@ local highValueTargets = { -- Priority targets for Raptors. Must be immobile to 
 	-- Antinukes
 	[UnitDefNames["armamd"].id] 	= true,
 	[UnitDefNames["corfmd"].id] 	= true,
-	-- Decoys
-	[UnitDefNames["armdf"].id]    	= true,
 }
 
 local config = { -- Don't touch this! ---------------------------------------------------------------------------------------------------------------------------------------------

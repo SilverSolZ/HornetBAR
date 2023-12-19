@@ -55,23 +55,21 @@ local mobileBuilders = {}
 local builtInPlace = {}
 
 local unitShowGroup = {}
-local unitHealth = {}
 for udefID, def in ipairs(UnitDefs) do
 	if not def.isFactory then
 		if def.buildOptions and #def.buildOptions > 0 then
 			mobileBuilders[udefID] = true
 		end
+
 		if (groupableBuildings[udefID] or not def.isBuilding) then
 			unitShowGroup[udefID] = true
 		end
 	end
-	unitHealth[udefID] = def.health
 end
 
 local finiGroup = {}
 local myTeam = Spring.GetMyTeamID()
 local createdFrame = {}
-local toBeAddedLater = {}
 
 local gameStarted
 
@@ -86,7 +84,6 @@ local TraceScreenRay = Spring.TraceScreenRay
 local GetUnitPosition = Spring.GetUnitPosition
 local GetGameFrame = Spring.GetGameFrame
 local Echo = Spring.Echo
-local GetUnitRulesParam = Spring.GetUnitRulesParam
 
 
 function widget:GameStart()
@@ -225,11 +222,6 @@ function widget:UnitFinished(unitID, unitDefID, unitTeam)
 		return
 	end
 
-	if GetUnitRulesParam(unitID, "resurrected") then
-		toBeAddedLater[unitID] = unitDefID
-		return
-	end
-
 	local builtInFrame = createdFrame[unitID] == GetGameFrame()
 
 	if not builtInFrame then
@@ -246,18 +238,6 @@ function widget:UnitFinished(unitID, unitDefID, unitTeam)
 	builtInPlace[unitID] = nil
 end
 
-function widget:GameFrame()
-	for unitID, unitDefID in pairs(toBeAddedLater) do
-		if unitHealth[unitDefID] and GetUnitHealth(unitID) == unitHealth[unitDefID] then
-			local gr = unit2group[unitDefID]
-			if gr ~= nil and GetUnitGroup(unitID) == nil then
-				SetUnitGroup(unitID, gr)
-			end
-			toBeAddedLater[unitID] = nil
-		end
-	end
-end
-
 function widget:UnitCreated(unitID, unitDefID, unitTeam, builderID)
 	if unitTeam ~= myTeam then return end
 
@@ -272,7 +252,6 @@ function widget:UnitDestroyed(unitID, unitDefID, teamID)
 	finiGroup[unitID] = nil
 	createdFrame[unitID] = nil
 	builtInPlace[unitID] = nil
-	toBeAddedLater[unitID] = nil
 end
 
 function widget:UnitGiven(unitID, unitDefID, newTeamID, teamID)
@@ -282,10 +261,9 @@ function widget:UnitGiven(unitID, unitDefID, newTeamID, teamID)
 			SetUnitGroup(unitID, gr)
 		end
 	end
-	finiGroup[unitID] = nil
 	createdFrame[unitID] = nil
+	finiGroup[unitID] = nil
 	builtInPlace[unitID] = nil
-	toBeAddedLater[unitID] = nil
 end
 
 function widget:UnitTaken(unitID, unitDefID, oldTeamID, teamID)
@@ -295,8 +273,8 @@ function widget:UnitTaken(unitID, unitDefID, oldTeamID, teamID)
 			SetUnitGroup(unitID, gr)
 		end
 	end
-	finiGroup[unitID] = nil
 	createdFrame[unitID] = nil
+	finiGroup[unitID] = nil
 	builtInPlace[unitID] = nil
 end
 
